@@ -1,4 +1,4 @@
-åååvar gulp = require('gulp');
+var gulp = require('gulp');
 var autoprefixer = require('gulp-autoprefixer');
 var concat = require('gulp-concat');
 var minifycss = require('gulp-minify-css');
