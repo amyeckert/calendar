@@ -1,39 +1,45 @@
 
-//namespacing! store all functions, objects, etc inside one BIG object, so no conflicts with other libraries or code.
-// can be ALLCAPS for a Global object. Easier to read
-// 1. CAL is acronym for One Page Website. This is typiCAL naming convention
-
 var CAL = CAL || {}; //checks to see if this object already exists first, if not, create new object. If var CAL = 'foo'; existed, it would be overriden !
 
 CAL.utilities = {
 	listen: function(){
-		//	attach click event to hamburger icon
-		// $('.nav-main').on('click', function(){
-		// 	$('.nav-main').slideToggle(400, function(){
-		// 		// alert('done!');
-		// 	});
-		// });
 		// scrollTo functionality
 		$('.nav-main a').on('click', function(event) {
 			event.preventDefault();
-
 			var pageToScrollTo = $(this).attr('href');
 			console.log(pageToScrollTo);
-
 			//set the speed of scroll, destination, CALl the function on the window
 			$(window).scrollTo(pageToScrollTo, 300);
-
 			//highlight current page in nav-main
 			var backToTop = $(this).addClass('is-current');
 		});
- 
-
 	},
+	updateEvents: function(){
+		console.log('checking for new events, GDI Camden');
+
+	 	$.ajax({
+			type: 'GET',
+			url: 'https://api.meetup.com/girl-develop-it-camden?&sign=true&photo-host=public&fields=event_sample', 
+		}).done(function(response){
+			console.log(response.result);
+
+			for(var i = 0; i < response.result.length; i++){
+				console.log(response.result[i].next_event);
+	
+			}
+
+		}).fail(function(response){
+			console.log('error: ', response);
+		});
+	}
 } 
 
+
 $(document).ready(function() {
+	console.log(CAL.utilities);
 
 	CAL.utilities.listen();
+	CAL.utilities.updateEvents();
 
 	var userForm = document.getElementById('sign-up');
 	var art = document.getElementById('add-image');

@@ -9,8 +9,6 @@ var returnUsers = function(){
 		url: 'http://art-share.herokuapp.com/api/v1/users/'
 	}).done(function(data){
 		console.log('all users: ', data.result[0].fname); //use .notation to access properties
-
-
 	}).fail(function(error){
 		console.log('error msg: ', error);
 	});
