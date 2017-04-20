@@ -15,36 +15,38 @@ button {
 .nav-wrapper {   
 	border-bottom: 1px solid #ffffff;   
 	width: 100%; 
-}
-.nav-main {
-	display: none;
-	width: 0;
+	height: 50px;
 
-}
-.nav-main li {   
-	border-bottom: 1px solid #84c980; 
-}
-.nav-main li:active,
-.nav-main li:visited {
-	background-color: #84c980;
-}
-.nav-main li a {   
-	padding: 25px;   
-	display: block; 
-	font-size: 1.5rem;
-	text-decoration: none;
-	color: #000000;
-}
-.nav-main li a:visited {
-	color: #07380d;
-}
-.nav-main li a:active {
-	color: #ffffff;
-	background-color: #84c980;
-}
-.hamburger {
-	color: #f76789;
-	font-size: 2rem;
+	.nav-main {
+		display: block;
+		width: 100%;
+		height: auto;
+		li {   
+			display: inline-block;
+
+			border-bottom: 1px solid #84c980; 
+			&:active,
+			&:visited {
+				background-color: #84c980;
+			}
+
+			a {   
+				padding: 25px;   
+				display: block; 
+				font-size: 1.5rem;
+				text-decoration: none;
+				color: #000000;
+
+				&:visited {
+					color: #07380d;
+				}
+				&:active {
+					color: #ffffff;
+					background-color: #84c980;
+				}
+			}
+		}
+	}
 }
 .is-mobile {
 	display: block;
@@ -56,28 +58,4 @@ button {
 	background-color: hsla(34, 26%, 50%, 1);
 	width: 50%;
 	margin: 0 auto;
-}
-
-//tablet
-@media screen and (min-width: 480px) {
-	.is-mobile {
-		display: none;
-	}
-	body {
-		background-color: transparent;
-	}
-	.nav-main {
-		display: block;
-	} 
-	.nav-main ul {
-		border-bottom: 1px solid #84c980;
-	}
-	.nav-main li {
-		display: inline-block;
-		border-bottom: none;
-
-	}
-
-
-
 }

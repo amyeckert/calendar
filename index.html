@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>One Page Website</title>
+		<title>calendar</title>
 		<link rel="stylesheet" href="css/style.min.css">
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 		<!-- <script type="text/javascript" src="js/jquery.scrollTo.js"></script> -->
@@ -12,12 +12,8 @@
 
 	<body>
 		<nav class="nav-wrapper">
-		<div class='is-mobile hamburger js-menu'>MENU icon here</div>         
 			<ul class="nav-main">           
 				<li><a href="#page-about">about</a></li>           
-				<li><a href="#page-contact">contact</a></li>
-				<li><a href="#page-stuff">stuff</a></li>         
-				<li><a href="#page-more">more stuff</a></li>
 				<li><a href="#page-no-click">don't click here!</a></li>         
 			</ul>       
 		</nav>
@@ -25,74 +21,78 @@
 
 		<!-- http://www.wpbeginner.com/plugins/how-to-add-google-calendar-in-wordpress/ -->
 		<section class="calendar-container">
-		
-			<div id='content'>
-      			<h1>upcoming events</h1>
-			    <ul id='events'></ul>
-		    </div>
-
-	   		<a href='#' id='authorize-button' onclick='handleAuthClick();'>Login</a>
-		    
-		    <!-- <script>
-		      // Insert the JS from above, here.
-		    </script> -->
     
-
 			<!-- this would be the calendar for SJPW.com's account, embedded. -->
 			<div class="calendar">
-				
-				<iframe src="https://calendar.google.com/calendar/embed?src=amy%40amyeckertprojects.com&ctz=America/New_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+
+      			<h1>upcoming events demo</h1>
+
+				<iframe src="https://calendar.google.com/calendar/embed?src=amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94%40group.calendar.google.com&ctz=America/New_York" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
 				
 			</div>
 		</section>		
 
-		<section id='page-about' class= 'is-mobile'>   
-			<p>Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Cras ultricies ligula sed magna dictum porta. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.</p>
-			<button type="submit"><a href="#" class='back-to-top'>back to top</a></button> 
-		</section>
-
-		<section id='page-contact'>   
-			<p>Nulla quis lorem ut libero malesuada feugiat. Sed porttitor lectus nibh. Nulla porttitor accumsan tincidunt.</p>
-			<button type="submit"><a href="#" class='back-to-top'>back to top</a></button> 
-		</section>
-
-		<section id='page-stuff'>   
-			<p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Cras ultricies ligula sed magna dictum porta. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.</p>
-			<button type="submit"><a href="#" class='back-to-top'>back to top</a></button>
-		</section>
-
-		<section id='page-more'>   
-			<p>Donec sollicitudin molestie malesuada. Curabitur aliquet quam id dui posuere blandit. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus.</p>
-			<button type="submit"><a href="#" class='back-to-top'>back to top</a></button> 
-		</section>
-
-		<section id='page-no-click'>   
-			<p>I told you not to click here!</p>
-			<button type=""><a href="#" class='back-to-top'>back to top</a></button> 
-		</section>
-
 		<section class='sign-up'>
 
-			<h1 id='heading'>This is a form.</h1>
+			<h1 id='heading'>Art-share API demo</h1>
 
-			<form action="#" method="post" id='log-in'>
-				<p class='form-item'>
-					<label for='username'>Username</label>
-					<input type="text" name="username" id='username' value="">
-				</p>
+			<form action="#" method="post" id="sign-up">
+				<h2>Sign up!</h2>
 
-				<p class='form-item'>
-					<label for='password'>Password</label>
-					<input type="text" name="password" id='password' value="">
-				</p>		
-				<p class='form-item'>
-					<button type="submit">submit</button>
-				</p>	
+				<label for='fname'>First Name</label>
+				<input type="text" name="fname" value="" id='fname'><br>
+
+				<label for='lname'>Last Name</label>
+				<input type="text" name="lname" value="" id='lname'><br>
+
+				<label>Email</label>
+				<input type="email" name="email" value="" id='email'><br>
+
+				<label>Password</label>
+				<input type="text" name="pword" value="" id='pword'><br>
+
+				<label>Create Account</label>
+				<button type="submit" name="user-submit" value="" id='user-submit'>Submit</button><br>
 			</form>
+
+			<form action="#" method="post" id='add-image'>
+				<h2>Add a Painting!</h2>
+				<label>Enter a url</label>
+				<input type="text" name="url" id='url'><br>
+
+				<label>artwork Title</label>
+				<input type="text" name="title" id='title'><br>
+
+				<label>Add to collection</label>
+				<button type="submit" name="" value="">add image</button><br>
+			</form>	
+
+			<div class="artworks">
+
+				<form action="#" method="post" id="show-art">
+					<h2>See some art!</h2>
+					<label>Enter user ID</label>
+					<input type="text" name="user-id" id="user-id">
+					<label>Artworks</label>
+					<button class="show-art" type="submit" name="artworks" value="List works by this member">show all</button>
+				</form>
+
+				<div id="art">
+
+				</div>
+			</div>
 		</section>
+		<section class= "main-content">
+			<div id='page-about'class='filler'>   
+				<p>I am teaching myself how to pull events from various other organizations' calendars into a test google calendar.</p>
+				<button type="submit"><a href="#" class='back-to-top'>back to top</a></button> 
+			</div>
 
-
-		<!-- end main contents -->
+			<div id='page-no-click' class='filler'>   
+				<p>I told you not to click here!</p>
+				<button type=""><a href="#" class='back-to-top'>back to top</a></button> 
+			</div>
+		</section>
 		<script type="text/javascript" src="js/jquery.scrollTo.js"></script>
 		<script src="js/min/styles.min.js"></script>
 		
