@@ -1,11 +1,11 @@
 //namespacing! store all functions, objects, etc inside one BIG object, so no conflicts with other libraries or code.
-// One Page Website OPW, can be ALLCAPS for a Global object. Easier to read
+// One Page Website CAL, can be ALLCAPS for a Global object. Easier to read
 
-// 1. OPW is acronym for One Page Website. This is typical naming convention
+// 1. CAL is acronym for One Page Website. This is typical naming convention
 
-var OPW = OPW || {}; //checks to see if this object already exists first, if not, create new object. If var OPW = 'foo'; existed, it would be overriden !
+var CAL = CAL || {}; //checks to see if this object already exists first, if not, create new object. If var CAL = 'foo'; existed, it would be overriden !
 
-OPW.utilities = {
+CAL.utilities = {
 	listen: function(){
 
 		//	attach click event to hamburger icon
@@ -73,9 +73,9 @@ OPW.utilities = {
 		}); 
 
 	},
-} //End OPW
+} //End CAL
 
 $(document).ready(function() {
-	OPW.utilities.listen();
+	CAL.utilities.listen();
 
 });// END of doc.ready()

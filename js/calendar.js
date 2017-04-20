@@ -1,6 +1,12 @@
+// NOTES:
+
+// https://developers.google.com/google-apps/calendar/v3/reference/
+//https://fullcalendar.io/
+//https://egghead.io/courses/build-your-first-react-js-application
+
 
 // credentials ------------------//
-var clientId = 'YOUR_CLIENT_ID';
+var clientId = '419714143213-s3gfkgmdaj8bu0a6p2aq64arotoem9g4.apps.googleusercontent.com';
 var apiKey = 'YOUR_API_KEY';
 var scopes = 'https://www.googleapis.com/auth/calendar';
 
