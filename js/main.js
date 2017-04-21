@@ -15,80 +15,97 @@ CAL.utilities = {
 		});
 	},
 	updateEvents: function(){
-		console.log('checking for new events, GDI Camden');
+		console.log('checking for new events');
 
+		var meetUpKey = '112f1c6d117217b646034221513f16';
+		
+		// Tai Chi Cherry Hill
+		var taiChi = 'cherryhill-taichi-group';
 	 	$.ajax({
 			type: 'GET',
-			url: 'https://api.meetup.com/girl-develop-it-camden?&sign=true&photo-host=public&fields=event_sample', 
-		}).done(function(response){
-			console.log(response.result);
+			url: 'https://api.meetup.com/' + taiChi + '/events?&sign=true&photo-host=public&page=20&_app_key=' + meetUpKey, 
+			dataType: 'jsonp'
 
-			for(var i = 0; i < response.result.length; i++){
-				console.log(response.result[i].next_event);
-	
-			}
+		}).done(function(response){
+			console.log(response);
+
+		}).fail(function(response){
+			console.log('error: ', response);
+		});
+
+
+		//GDI-Camden
+		var gdiCamden = 'Girl-Develop-It-Camden';
+		$.ajax({
+			type: 'GET',
+			url: 'https://api.meetup.com/' + gdiCamden + '/events?&sign=true&photo-host=public&page=20&_app_key=' + meetUpKey, 
+			dataType: 'jsonp'
+
+		}).done(function(response){
+			console.log(response);
 
 		}).fail(function(response){
 			console.log('error: ', response);
 		});
 	}
-} 
+
+} // end CAL object
 
 
 $(document).ready(function() {
-	console.log(CAL.utilities);
+	// console.log(CAL.utilities);
 
 	CAL.utilities.listen();
 	CAL.utilities.updateEvents();
 
-	var userForm = document.getElementById('sign-up');
-	var art = document.getElementById('add-image');
-	const myId = 767; 
-	var userId = 0;
-	var listOfArt = document.getElementById('show-art');
+	// var userForm = document.getElementById('sign-up');
+	// var art = document.getElementById('add-image');
+	// const myId = 767; 
+	// var userId = 0;
+	// var listOfArt = document.getElementById('show-art');
 
-	userForm.addEventListener('submit', function(event){
-		//prevent form from submitting
-		event.preventDefault();
+	// userForm.addEventListener('submit', function(event){
+	// 	//prevent form from submitting
+	// 	event.preventDefault();
 
-		// get values of fields
-		var firstName = $('#fname').val();
-		var lastName = $('#lname').val();
-		var email = $('#email').val();
-		var password = $('#pword').val();
-		// store 
-		var newUser = [firstName, lastName, email, password];
+	// 	// get values of fields
+	// 	var firstName = $('#fname').val();
+	// 	var lastName = $('#lname').val();
+	// 	var email = $('#email').val();
+	// 	var password = $('#pword').val();
+	// 	// store 
+	// 	var newUser = [firstName, lastName, email, password];
 
-		console.log('created new user!');
+	// 	console.log('created new user!');
 		
-		createUser(firstName, lastName, email, password);
-		console.table(newUser);
+	// 	createUser(firstName, lastName, email, password);
+	// 	console.table(newUser);
 	
-	});
+	// });
 
-	art.addEventListener('submit', function(event){
-		event.preventDefault();
+	// art.addEventListener('submit', function(event){
+	// 	event.preventDefault();
 		
-		// get url
-		var url = $('#url').val();
-		var title = $('#title').val();
-		var $background = $('body');
+	// 	// get url
+	// 	var url = $('#url').val();
+	// 	var title = $('#title').val();
+	// 	var $background = $('body');
 
-		// console.log(url);
+	// 	// console.log(url);
 
-		$background.css('background-image', 'url("' + url  + '")');
-		addPainting(myId, url, title);
+	// 	$background.css('background-image', 'url("' + url  + '")');
+	// 	addPainting(myId, url, title);
 		
-	});
-	// listArtworks
-	listOfArt.addEventListener('submit', function(event){
-		event.preventDefault();
-		//get user by ID
-		var userId = $('#user-id').val();
-		console.log(userId);
-		listPaintings(userId);
+	// });
+	// // listArtworks
+	// listOfArt.addEventListener('submit', function(event){
+	// 	event.preventDefault();
+	// 	//get user by ID
+	// 	var userId = $('#user-id').val();
+	// 	console.log(userId);
+	// 	listPaintings(userId);
 
-	});
+	// });
 
 
 // http://images.huffingtonpost.com/2012-08-18-GorillaSilverback6.jpg
