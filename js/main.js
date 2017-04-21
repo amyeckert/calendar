@@ -14,20 +14,31 @@ CAL.utilities = {
 			var backToTop = $(this).addClass('is-current');
 		});
 	},
-	updateEvents: function(){
-		console.log('checking for new events');
 
+	findEvents: function(){
+		console.log('checking for new events');
 		var meetUpKey = '112f1c6d117217b646034221513f16';
-		
+
 		// Tai Chi Cherry Hill
 		var taiChi = 'cherryhill-taichi-group';
 	 	$.ajax({
 			type: 'GET',
-			url: 'https://api.meetup.com/' + taiChi + '/events?&sign=true&photo-host=public&page=20&_app_key=' + meetUpKey, 
+			url: 'https://api.meetup.com/' + taiChi + '/events?&sign=true&photo-host=public&page=20&fields=short_link,series&_app_key=' + meetUpKey, 
 			dataType: 'jsonp'
 
 		}).done(function(response){
-			console.log(response);
+
+			for (var i = response.data.length - 1; i >= 0; i--) {
+			
+				var eventDateTime = response.data[i].time;
+				var eventLink = response.data[i].short_link;
+				var eventName = response.data[i].name;
+				
+				console.log(eventName, eventLink, eventDateTime);
+
+				console.log(response.data[0].description);
+			}
+		 
 
 		}).fail(function(response){
 			console.log('error: ', response);
@@ -35,18 +46,34 @@ CAL.utilities = {
 
 
 		//GDI-Camden
-		var gdiCamden = 'Girl-Develop-It-Camden';
-		$.ajax({
-			type: 'GET',
-			url: 'https://api.meetup.com/' + gdiCamden + '/events?&sign=true&photo-host=public&page=20&_app_key=' + meetUpKey, 
-			dataType: 'jsonp'
+		// var gdiCamden = 'Girl-Develop-It-Camden';
+		// $.ajax({
+		// 	type: 'GET',
+		// 	url: 'https://api.meetup.com/' + gdiCamden + '/events?&sign=true&photo-host=public&page=20&_app_key=' + meetUpKey, 
+		// 	dataType: 'jsonp'
 
-		}).done(function(response){
-			console.log(response);
+		// }).done(function(response){
+		// 	console.log(response.data);
 
-		}).fail(function(response){
-			console.log('error: ', response);
-		});
+		// }).fail(function(response){
+		// 	console.log('error: ', response);
+		// });
+	},
+
+	timeConverter: function(UNIX_timestamp){
+		  var a = new Date(UNIX_timestamp * 1000);
+		  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+		  var year = a.getFullYear();
+		  var month = months[a.getMonth()];
+		  var date = a.getDate();
+		  var hour = a.getHours();
+		  var min = a.getMinutes();
+		  var sec = a.getSeconds();
+		  var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+		  return time;
+	},
+	addToCalendar: function(){
+		// takes the date, time description and link to event's page on Meetup and creates a G-calendar event on my test G-calendar. 
 	}
 
 } // end CAL object
@@ -56,59 +83,8 @@ $(document).ready(function() {
 	// console.log(CAL.utilities);
 
 	CAL.utilities.listen();
-	CAL.utilities.updateEvents();
-
-	// var userForm = document.getElementById('sign-up');
-	// var art = document.getElementById('add-image');
-	// const myId = 767; 
-	// var userId = 0;
-	// var listOfArt = document.getElementById('show-art');
-
-	// userForm.addEventListener('submit', function(event){
-	// 	//prevent form from submitting
-	// 	event.preventDefault();
-
-	// 	// get values of fields
-	// 	var firstName = $('#fname').val();
-	// 	var lastName = $('#lname').val();
-	// 	var email = $('#email').val();
-	// 	var password = $('#pword').val();
-	// 	// store 
-	// 	var newUser = [firstName, lastName, email, password];
-
-	// 	console.log('created new user!');
-		
-	// 	createUser(firstName, lastName, email, password);
-	// 	console.table(newUser);
-	
-	// });
-
-	// art.addEventListener('submit', function(event){
-	// 	event.preventDefault();
-		
-	// 	// get url
-	// 	var url = $('#url').val();
-	// 	var title = $('#title').val();
-	// 	var $background = $('body');
-
-	// 	// console.log(url);
-
-	// 	$background.css('background-image', 'url("' + url  + '")');
-	// 	addPainting(myId, url, title);
-		
-	// });
-	// // listArtworks
-	// listOfArt.addEventListener('submit', function(event){
-	// 	event.preventDefault();
-	// 	//get user by ID
-	// 	var userId = $('#user-id').val();
-	// 	console.log(userId);
-	// 	listPaintings(userId);
-
-	// });
-
-
-// http://images.huffingtonpost.com/2012-08-18-GorillaSilverback6.jpg
-// https://4.bp.blogspot.com/-LiAlf8oX1sU/UPQQyvOcP2I/AAAAAAAAEck/wmZk4jgN1VY/s1600/biscuit+doughnuts.jpg
+	CAL.utilities.findEvents();
+	// CAL.utilities.timeConverter(eventDateTime);
+	// console.log(eventDateTime)
 
 });// END of doc.ready()
