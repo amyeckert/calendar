@@ -1,9 +1,7 @@
 
-// var CAL = CAL || {}; //checks to see if this object already exists first, if not, create new object. If var CAL = 'foo'; existed, it would be overriden !
 $(document).ready(function() {
 
-
-	var listen= function(){
+	var listen = function(){
 		// scrollTo functionality
 		$('.nav-main a').on('click', function(event) {
 			event.preventDefault();
@@ -20,76 +18,54 @@ $(document).ready(function() {
 		console.log('checking for next events');
 
 		var meetUpKey = '112f1c6d117217b646034221513f16';
-		var meetUpName = ['cherryhill-taichi-group', 'cherryhill-taichi-group'];
+		var meetUpName = ['cherryhill-taichi-group', 'Girl-Develop-It-Camden'];
 
 		for (var i = meetUpName.length - 1; i >= 0; i--) {
 
-		 	var upcomingEvents = $.ajax({
+			$.ajax({
 				type: 'GET',
-				url: 'https://api.meetup.com/' + meetUpName[i] + '/events?&sign=true&photo-host=public&page=20&fields=short_link&status=upcoming&_app_key=' + meetUpKey, 
+				url: 'https://api.meetup.com/' + meetUpName[i] + '/events?&sign=true&photo-host=public&page=1&fields=short_link&status=upcoming&_app_key=' + meetUpKey, 
 				dataType: 'jsonp'
 
 			}).done(function(response){
-					// for (var i = upcomingEvents.length - 1; i >= 0; i--) {
-						console.log(upcomingEvents);
-					// }
 
-
-				// for (var i = response.data.length - 1; i >= 0; i--) {
-				// 	var eventDateTime = response.data[i].time;
-				// 	var eventLink = response.data[i].short_link;
-				// 	var eventName = response.data[i].name;	
-				// }
+				for (var i = response.data.length - 1; i >= 0; i--) {
+					var eventDateTime = response.data[i].time;
+					var eventLink = response.data[i].short_link;
+					var eventName = response.data[i].name;	
+				}
 				
-		 		// var nextEvents = [eventName, eventLink, eventDateTime];
-		 		// console.log(nextEvents);
-			
+		 		var nextEvents = [eventName, eventLink, convertDateTime(eventDateTime)];
+ 				console.log(nextEvents);
+ 				// return(nextEvents);
+						
 			}).fail(function(response){
 				console.log('error: ', response);
 			});
 		}
-
-		// Tai Chi Cherry Hill
-		// var taiChi = 'cherryhill-taichi-group';
-
-			// console.log(nextTaiChiEvent);		
-
-
-
-		//GDI-Camden
-		// var gdiCamden = 'Girl-Develop-It-Camden';
-		// $.ajax({
-		// 	type: 'GET',
-		// 	url: 'https://api.meetup.com/' + gdiCamden + '/events?&sign=true&photo-host=public&page=4&fields=short_link&status=upcoming&_app_key=' + meetUpKey, 
-		// 	dataType: 'jsonp'
-
-		// }).done(function(response){
-
-		// 	for (var i = response.data.length - 1; i >= 0; i--) {
-			
-		// 		var eventDateTime = response.data[0].time;
-		// 		var eventLink = response.data[0].short_link;
-		// 		var eventName = response.data[0].name;
-		// 	}
-		// 	var nextGdiEvent = [eventName, eventLink, eventDateTime];
-		// 		console.log(nextGdiEvent);			
-
-		// }).fail(function(response){
-		// 	console.log('error: ', response);
-		// });
 	}
-
+	// source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
 	var convertDateTime = function(eventDateTime){
-		var eventDateTime = new Date(year, month, day, hours);
-		eventDateTime.toDateSTring();
-		console.log(eventDateTime);
+		var a = new Date(eventDateTime * 1000);
+		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+		var year = a.getFullYear();
+		var month = months[a.getMonth()];
+		var date = a.getDate();
+		var hour = a.getHours();
+		var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes(); 
+		// var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
+		var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ' o\'clock.' ;
+		return time;
+
+		console.log(time);
 	}
 
-	var addToCalendar = function(){
+	var addToCalendar = function(nextEvents){
 		// takes the date, time description and link to event's page on Meetup and creates a G-calendar event on my test G-calendar. 
 	}
 
 	listen();
 	findEvents();
+	
 
 });// END of doc.ready()
