@@ -379,6 +379,55 @@ template {
 /********************
 ** Partials
 ********************/
+.calendar {
+  display: block;
+  min-height: 100%;
+  width: 100%;
+  height: 100%; }
+  .calendar .calendar-inner {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-flow: column nowrap;
+            flex-flow: column nowrap;
+    width: 90%;
+    margin: auto;
+    background-color: tomato; }
+    .calendar .calendar-inner .calendar-controls {
+      -webkit-box-ordinal-group: 2;
+          -ms-flex-order: 1;
+              order: 1; }
+    .calendar .calendar-inner .day-of-week {
+      -webkit-box-ordinal-group: 3;
+          -ms-flex-order: 2;
+              order: 2; }
+      .calendar .calendar-inner .day-of-week .dayOFWeek {
+        display: inline-block;
+        height: 50px; }
+    .calendar .calendar-inner .weeks-container {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-flow: column nowrap;
+              flex-flow: column nowrap;
+      -webkit-box-ordinal-group: 4;
+          -ms-flex-order: 3;
+              order: 3; }
+      .calendar .calendar-inner .weeks-container .week {
+        display: inline-block;
+        width: 100%; }
+        .calendar .calendar-inner .weeks-container .week .day {
+          min-height: 200px;
+          min-width: 200px;
+          border: 1px solid tomato; }
+          .calendar .calendar-inner .weeks-container .week .day .date {
+            display: block;
+            height: 30px; }
+
 body {
   width: 90%;
   margin: 15px auto; }

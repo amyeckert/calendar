@@ -1,0 +1,61 @@
+.calendar {
+	display: block;
+	min-height: 100%;
+	width: 100%;
+	height: 100%;
+
+	.calendar-inner {
+		display: flex;
+		flex-flow: column nowrap;
+		width: 90%;
+		margin: auto;
+		background-color: tomato;
+
+		.calendar-controls {
+			order: 1;
+
+		}	
+		.day-of-week {
+			order: 2;
+			.dayOFWeek {
+			display: inline-block;
+			height: 50px;
+			}
+
+		}
+		.weeks-container {
+			display: flex;
+			flex-flow: column nowrap;
+			order: 3;
+
+			.week {
+				display: inline-block;
+
+				width: 100%;
+
+				.day {
+					min-height: 200px;
+					min-width: 200px;
+					border: 1px solid tomato;
+					.date {
+						display: block;
+						height: 30px;
+
+					}
+				}
+
+			}
+		}
+	}
+}
+
+
+// .grid-row {
+// 	display: flex;
+// 	flex-flow: row nowrap;
+
+// 	.grid-item {
+// 		flex: 0 1 auto;
+// 	}
+
+// }
