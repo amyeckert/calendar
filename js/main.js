@@ -47,6 +47,8 @@ $(document).ready(function() {
 
 	// source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
 	var convertDateTime = function(eventDateTime){
+		// 2015-05-28T09:00:00-07:00 is the time format required by Google calendar
+
 		var a = new Date(eventDateTime * 1000);
 		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 		var year = a.getFullYear();
@@ -55,20 +57,22 @@ $(document).ready(function() {
 		var hour = a.getHours();
 		var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes(); 
 		// var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-		var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ' o\'clock.' ;
-		return time;
+		var time = year  + '-' + month + '-' + date + '-' + hour + ':' + min + ' o\'clock.' ;
+		return time; 
 
 		console.log(time);
 	}
 
-	// var addEventToCalendar = function(nextEvents) {
-	// 	// takes the date, time description and link to event's page on Meetup and creates a G-calendar event on my test G-calendar. 
-	// }
+	// https://developers.google.com/google-apps/calendar/create-events
+	// https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
+	var createEvent = function(nextEvents){
 
-	var createEvent = function(eventDateTime, eventLink, eventName){
-		
+		for (var i = nextEvents.length - 1; i >= 0; i--) {
+			var summary = nextEvents[0];
+			var startTime = 
+		}
 		var event = {
-			'summary': ' Google I/O 2015',
+			'summary':  nextEvents[0],
 			// 'location': '800 Howard St., San Francisco, CA 94103',
 			'description': 'A chance to hear more about Google\'s developer products.',
 			'start': {
