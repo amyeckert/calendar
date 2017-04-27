@@ -44,7 +44,7 @@ gulp.task('watch', function () {
     // livereload.listen();
     gulp.watch('./scss/partials/*.scss', ['styles']); // watch main styles.scss  
     gulp.watch('./scss/vendor/*.scss', ['styles']); // watch partials and vendor dirs
-    gulp.watch('./js/*.js', ['js']);
+    // gulp.watch('./js/*.js', ['js']);
 });
 
 

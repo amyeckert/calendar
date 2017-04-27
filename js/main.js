@@ -1,5 +1,6 @@
 
 $(document).ready(function() {
+	// $('#authorize-button').hide();
 
 	var listen = function(){
 		// scrollTo functionality
@@ -14,87 +15,77 @@ $(document).ready(function() {
 		});
 	}
 
+	// go to external calendars and get events to add to test calendar (sjpw's calendar eventually) 
 	var findEvents = function(){
-		console.log('checking for next events');
+		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
 
 		var meetUpKey = '112f1c6d117217b646034221513f16';
 		var meetUpName = ['cherryhill-taichi-group', 'Girl-Develop-It-Camden'];
 
 		for (var i = meetUpName.length - 1; i >= 0; i--) {
-
 			$.ajax({
 				type: 'GET',
 				url: 'https://api.meetup.com/' + meetUpName[i] + '/events?&sign=true&photo-host=public&page=1&fields=short_link&status=upcoming&_app_key=' + meetUpKey, 
 				dataType: 'jsonp'
 
 			}).done(function(response){
-
+				// iterate over response to get the following data, 
 				for (var i = response.data.length - 1; i >= 0; i--) {
-					var eventDateTime = response.data[i].time;
+					var eventStartTime = convertTimestamp(response.data[i].time);
 					var eventLink = response.data[i].short_link;
 					var eventName = response.data[i].name;	
+
+ 					// format the data for GCal events
+ 					var eventToAdd = {
+						'link': eventLink,
+						'summary':  eventName,
+						'start': {'dateTime': eventStartTime,
+									'timeZone': 'America/New_York'}
+
+					};
+ 					console.log(eventToAdd);
+ 					return eventToAdd;
+
+ 					// addToCalendar(eventToAdd);
+
 				}
-				
-		 		var nextEvents = [eventName, eventLink, convertDateTime(eventDateTime)];
- 				console.log(nextEvents, nextEvents[0]);
- 				// return(nextEvents);
-						
+
 			}).fail(function(response){
 				console.log('error: ', response);
 			});
 		}
 	}
 
-	// source: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-	var convertDateTime = function(eventDateTime){
-		// 2015-05-28T09:00:00-07:00 is the time format required by Google calendar
-
-		var a = new Date(eventDateTime * 1000);
-		var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-		var year = a.getFullYear();
-		var month = months[a.getMonth()];
-		var date = a.getDate();
-		var hour = a.getHours();
-		var min = a.getMinutes() < 10 ? '0' + a.getMinutes() : a.getMinutes(); 
-		// var sec = a.getSeconds() < 10 ? '0' + a.getSeconds() : a.getSeconds();
-		var time = year  + '-' + month + '-' + date + '-' + hour + ':' + min + ' o\'clock.' ;
-		return time; 
-
-		console.log(time);
+	// source https://gist.github.com/kmaida/6045266
+	function convertTimestamp(timestamp) {
+	  	var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
+			yyyy = d.getFullYear(),
+			mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+			dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+			hh = ('0' + d.getHours()).slice(-2),
+			// h = hh,
+			min = ('0' + d.getMinutes()).slice(-2),		// Add leading 0.
+			sec = ('0' + d.getSeconds()).slice(-2),
+			ampm = 'AM',
+			time;
+				
+		if (hh > 12) {
+			h = hh - 12;
+			ampm = 'PM';
+		} else if (hh === 12) {
+			h = 12;
+			ampm = 'PM';
+		} else if (hh == 0) {
+			h = 12;
+		}
+		// 2015-05-28T09:00:00 format for Google cal events
+		time = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + min + ':' + sec;
+		return time;
 	}
 
 	// https://developers.google.com/google-apps/calendar/create-events
 	// https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
-	var createEvent = function(nextEvents){
-
-		for (var i = nextEvents.length - 1; i >= 0; i--) {
-			var summary = nextEvents[0];
-			var startTime = 
-		}
-		var event = {
-			'summary':  nextEvents[0],
-			// 'location': '800 Howard St., San Francisco, CA 94103',
-			'description': 'A chance to hear more about Google\'s developer products.',
-			'start': {
-			'dateTime': '2015-05-28T09:00:00-07:00',
-			'timeZone': 'America/Los_Angeles'
-			},
-			'end': {
-			'dateTime': '2015-05-28T17:00:00-07:00',
-			'timeZone': 'America/Los_Angeles'
-			}
-		};
-		var request = gapi.client.calendar.events.insert({
-			'calendarId': 'primary',
-			'resource': event
-		});
-
-		request.execute(function(event) {
-  			appendPre('Event created: ' + event.htmlLink);
-		});
-
-
-
+	var createEvent = function(){
 		$.ajax({
 			type: 'POST',
 			url: 'https://www.googleapis.com/calendar/v3/calendars/' + testCalendarId + '/events',
@@ -105,20 +96,28 @@ $(document).ready(function() {
 
 		}).fail(function(response){
 				console.log('error: ', response);
-			});
+		});
+
+
+
+			// var request = gapi.client.calendar.events.insert({
+			// 	'calendarId': 'primary',
+			// 	'resource': event
+			// });
+
+			// request.execute(function(event) {
+	  // 			appendPre('Event created: ' + event.htmlLink);
+			// });
 	}
 
-	//---------	TALK TO GOOGLE CALENDAR API----------------//
+	//---------	GOOGLE CALENDAR API----------------//
 
 	var gclientId = '419714143213-m78j61414b5h7u0uo91n40gidl5a0kce.apps.googleusercontent.com';
 	var gapiKey = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
 	var gscopes = 'https://www.googleapis.com/auth/calendar';
 	var testCalendarId = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
 
-
-
-
-//------------- LOAD RESOURCES / 0AUTH --------------//
+	//------------- LOAD RESOURCES & 0AUTH --------------//
 
 	function handleClientLoad() {
         // Loads the client library and the auth2 library together for efficiency.
@@ -128,6 +127,7 @@ $(document).ready(function() {
         console.log('client auth2 library loaded');
   	}
 
+  	// check that sjpw site admin is logged in to Google: 
   	function initClient() {
         // Initialize the client with API key and People API, and initialize OAuth with an
         // OAuth 2.0 client ID and scopes (space delimited string) to request access.
@@ -142,16 +142,20 @@ $(document).ready(function() {
 
           // Handle the initial sign-in state.
           updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+
+          // $('#authorize-button').show();
+
         });
   	}
+  	
 
   	function updateSigninStatus(isSignedIn) {
         // When signin status changes, this function is called.
         // If the signin status is changed to signedIn, we make an API call.
         if (isSignedIn) {
-      		console.log('you are signed in');
-          	makePeopleApiCall();
-          	makeCalendarApiCall();
+          	makeApiCall();
+			// getCalendarList();     		
+			console.log('you are signed in, called up your calendar list');
         }
   	}
 
@@ -169,7 +173,7 @@ $(document).ready(function() {
 
 	//----------------- API CALLS ---------------------//
 
-  	function makePeopleApiCall() {
+  	function makeApiCall() {
         // Make an API call to the People API, and print the user's given name.
         gapi.client.people.people.get({
           	resourceName: 'people/me'
@@ -181,29 +185,39 @@ $(document).ready(function() {
 
         
   	}
-  	function makeCalendarApiCall() {
-  		//get the calendar ID
-  		// gapi.client.calendarList.insert({
-  		// 	resourceName: 'primary'
-  		// }).then(function(response) {
-  		// 	console.log(response.result.calendarId);
-  		// }, function(reason) {
-  		// 	console.log('Error: ' + reason.result.error.message);
+  	function getCalendarInfo() {
+		//get the calendar ID where I want to insert events
+  		$.ajax({
+			type: 'GET',
+			url: 'https://www.googleapis.com/calendar/v3/users/me/calendarList',
+			dataType: 'jsonp'
+  		}).done(function(response){
+			console.log(response);
+
+		}).fail(function(response){
+				console.log('error: ', response);
+		});
+
+  // 		// gapi.client.calendarList.get({
+  // 		// 	resourceName: 'items/test'
+  // 		// }).then(function(response) {
+  // 		// 	console.log(response.result.calendarId);
+  // 		// }, function(reason) {
+  // 		// 	console.log('Error: ' + reason.result.error.message);
         
-  		// });
-  	}
+  // 		// });
+  // 	}
 
 	//----------------------- DO THIS STUFF -------------------//
 
 	listen();
 	findEvents();
 	handleClientLoad();
-	
 
-	// $('#authorize-button').on('click', function(e) {
- //        // e.preventDefault();
- //        handleSignInClick();
- //        console.log('clicked the Log In button');
- //    });
+	$('#authorize-button').on('click', function(e) {
+        e.preventDefault();
+        handleSignInClick();
+        console.log('clicked the Log In button');
+    });
 
 });// END of doc.ready()
