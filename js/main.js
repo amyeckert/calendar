@@ -114,7 +114,8 @@ $(document).ready(function() {
 
 	const G_CLIENT_ID = '419714143213-dg82c6s6si9dgoe90po1tgdhpnj39hik.apps.googleusercontent.com';
 	const G_API_KEY = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
-	const G_SCOPES = 'https://www.googleapis.com/auth/userinfo.profile';
+	const G_SCOPES_PEOPLE = 'https://www.googleapis.com/auth/userinfo.profile';
+	const G_SCOPES_CAL = "https://www.googleapis.com/auth/calendar.readonly";
 	const TEST_CAL_ID = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
 
 	var signinButton = document.getElementById('signin');
@@ -127,25 +128,36 @@ $(document).ready(function() {
         // Loads the client library and the auth2 library together for efficiency.
         // Loading the auth2 library is optional here since `gapi.client.init` function will load
         // it if not already loaded. Loading it upfront can save one network request.
-        gapi.load('client:auth2', initClient);
+        // gapi.load('client:auth2', initClientPeople);
+        gapi.load('client:auth2', initClientCalendar);
         console.log('client auth2 library loaded');
   	}
 
   	// check that sjpw site admin is logged in to Google: 
-  	function initClient() {
-        // Initialize the client with API key and People API, and initialize OAuth with an
-        // OAuth 2.0 client ID and scopes (space delimited string) to request access.
-    	gapi.client.init({
-            apiKey: G_API_KEY,
-            discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
-            clientId: G_CLIENT_ID,
-            scope: G_SCOPES
-        }).then(function () {
-          // Listen for sign-in state changes.
-          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+  	// function initClientPeople() {
+   //      // Initialize the client with API key and People API, and initialize OAuth with an
+   //      // OAuth 2.0 client ID and scopes (space delimited string) to request access.
+   //  	// gapi.client.init({
+   //   //        apiKey: G_API_KEY,
+   //   //        discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
+   //   //        clientId: G_CLIENT_ID,
+   //   //        scope: G_SCOPES_PEOPLE
+   //   //    }).then(function () {
+   //   //      // Listen for sign-in state changes.
+   //   //      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+   //   //      // Handle the initial sign-in state.
+   //   //      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 
-          // Handle the initial sign-in state.
-          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+   //   //    });
+   //  }
+    function initClientCalendar() {
+        gapi.client.init({
+        	apiKey: G_API_KEY,
+        	clientId: G_CLIENT_ID,
+        	scope: G_SCOPES_CAL
+        }).then(function(){
+        	gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        	updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 
         });
   	}
@@ -154,15 +166,9 @@ $(document).ready(function() {
         // When signin status changes, this function is called.
         // If the signin status is changed to signedIn, we make an API call.
         if (isSignedIn) {
-          	makeApiCall();
-			getCalendarInfo();     		
-			// 
-			signinButton.style.display = 'none';
-            signoutButton.style.display = 'block';
-        } else {
-        	signinButton.style.display = 'block';
-            signoutButton.style.display = 'none';
-        }
+          	// getUserName();
+			getCalendarInfo();     	 
+        } 
   	}
 
   	function handleSignInClick(event) {
@@ -176,40 +182,41 @@ $(document).ready(function() {
   	}
 
 	//----------------- API CALLS ---------------------//
-	//people api
-  	function makeApiCall() {
+	// call people api
+  	function getUserName() {
         // Make an API call to the People API, and print the user's given name.
         gapi.client.people.people.get({
           	resourceName: 'people/me'
         }).then(function(response) {
-          	console.log('Hello, SJPW webmaster: ' + response.result.names[0].givenName, response);
+          	console.log('Hello, ' + response.result.names[0].givenName);
         }, function(reason) {
           	console.log('Error: ' + reason.result.error.message);
         });
   	}
 
-  	//calendar api
+  	//call calendar api
   	function getCalendarInfo() {
 		//get the calendar ID where I want to insert events
   		$.ajax({
 			type: 'GET',
 			url: 'https://www.googleapis.com/calendar/v3/users/me/calendarList',
-			dataType: 'jsonp'
+			dataType: 'jsonp',
+			// scope: G_SCOPES_CAL
   		}).done(function(response){
-			console.log(response);
+			console.log(response.result);
 
 		}).fail(function(response){
 				console.log('error: ', response);
 		});
 
-  // 		// gapi.client.calendarList.get({
-  // 		// 	resourceName: 'items/test'
-  // 		// }).then(function(response) {
-  // 		// 	console.log(response.result.calendarId);
-  // 		// }, function(reason) {
-  // 		// 	console.log('Error: ' + reason.result.error.message);
+  		// gapi.client.calendarList.list({
+  		// 	'items': {'id': 'TEST'}
+  		// }).then(function(response) {
+  		// 	console.log(response.result.calendarId);
+  		// }, function(reason) {
+  		// 	console.log('Error: ' + response + reason.result.error.message);
         
-  // 		// });
+  		// });
   	}
 
 	//----------------------- DO THIS STUFF -------------------//
