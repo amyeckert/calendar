@@ -112,10 +112,14 @@ $(document).ready(function() {
 
 	//---------	GOOGLE CALENDAR API----------------//
 
-	var gclientId = '419714143213-m78j61414b5h7u0uo91n40gidl5a0kce.apps.googleusercontent.com';
-	var gapiKey = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
-	var gscopes = 'https://www.googleapis.com/auth/calendar';
-	var testCalendarId = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
+	const G_CLIENT_ID = '419714143213-dg82c6s6si9dgoe90po1tgdhpnj39hik.apps.googleusercontent.com';
+	const G_API_KEY = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
+	const G_SCOPES = 'https://www.googleapis.com/auth/userinfo.profile';
+	const TEST_CAL_ID = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
+
+	var signinButton = document.getElementById('signin');
+    var signoutButton = document.getElementById('signout');
+
 
 	//------------- LOAD RESOURCES & 0AUTH --------------//
 
@@ -132,10 +136,10 @@ $(document).ready(function() {
         // Initialize the client with API key and People API, and initialize OAuth with an
         // OAuth 2.0 client ID and scopes (space delimited string) to request access.
     	gapi.client.init({
-            apiKey: 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI',
-            discoveryDocs: ["https://people.googleapis.com/$discovery/rest?version=v1"],
-            clientId: '419714143213-dg82c6s6si9dgoe90po1tgdhpnj39hik.apps.googleusercontent.com',
-            scope: 'profile'
+            apiKey: G_API_KEY,
+            discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
+            clientId: G_CLIENT_ID,
+            scope: G_SCOPES
         }).then(function () {
           // Listen for sign-in state changes.
           gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
@@ -143,19 +147,21 @@ $(document).ready(function() {
           // Handle the initial sign-in state.
           updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 
-          // $('#authorize-button').show();
-
         });
   	}
-  	
 
   	function updateSigninStatus(isSignedIn) {
         // When signin status changes, this function is called.
         // If the signin status is changed to signedIn, we make an API call.
         if (isSignedIn) {
           	makeApiCall();
-			// getCalendarList();     		
-			console.log('you are signed in, called up your calendar list');
+			getCalendarInfo();     		
+			// 
+			signinButton.style.display = 'none';
+            signoutButton.style.display = 'block';
+        } else {
+        	signinButton.style.display = 'block';
+            signoutButton.style.display = 'none';
         }
   	}
 
@@ -163,28 +169,26 @@ $(document).ready(function() {
         // Ideally the button should only show up after gapi.client.init finishes, so that this
         // handler won't be called before OAuth is initialized.
         gapi.auth2.getAuthInstance().signIn();
-      	console.log('signed in successfully');
   	}
 
   	function handleSignOutClick(event) {
         gapi.auth2.getAuthInstance().signOut();
-        console.log('signed out successfully');
   	}
 
 	//----------------- API CALLS ---------------------//
-
+	//people api
   	function makeApiCall() {
         // Make an API call to the People API, and print the user's given name.
         gapi.client.people.people.get({
           	resourceName: 'people/me'
         }).then(function(response) {
-          	console.log('Hello, SJPW webmaster: ' + response.result.names[0].givenName);
+          	console.log('Hello, SJPW webmaster: ' + response.result.names[0].givenName, response);
         }, function(reason) {
           	console.log('Error: ' + reason.result.error.message);
         });
-
-        
   	}
+
+  	//calendar api
   	function getCalendarInfo() {
 		//get the calendar ID where I want to insert events
   		$.ajax({
@@ -206,7 +210,7 @@ $(document).ready(function() {
   // 		// 	console.log('Error: ' + reason.result.error.message);
         
   // 		// });
-  // 	}
+  	}
 
 	//----------------------- DO THIS STUFF -------------------//
 
