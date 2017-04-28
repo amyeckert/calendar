@@ -203,3 +203,10 @@ jspm_packages
 # Application specific files
 venv
 .sass-cache
+
+# specific files to keep private #
+##################################
+client_id.json
+data.json
+
+

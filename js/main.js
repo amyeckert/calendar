@@ -1,31 +1,41 @@
 
 $(document).ready(function() {
-	// $('#authorize-button').hide();
+	handleClientLoad();
+	updateSigninStatus();
 
-	var listen = function(){
-		// scrollTo functionality
-		$('.nav-main a').on('click', function(event) {
-			event.preventDefault();
-			var pageToScrollTo = $(this).attr('href');
-			console.log(pageToScrollTo);
-			//set the speed of scroll, destination, CALl the function on the window
-			$(window).scrollTo(pageToScrollTo, 300);
-			//highlight current page in nav-main
-			var backToTop = $(this).addClass('is-current');
-		});
-	}
+	$('#signin').hide();
+	$('#signout').hide();
+
+	//---------	GOOGLE CALENDAR API----------------//
+	const G_CLIENT_ID = '419714143213-dg82c6s6si9dgoe90po1tgdhpnj39hik.apps.googleusercontent.com';
+	const G_API_KEY = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
+	const G_SCOPES_PEOPLE = 'https://www.googleapis.com/auth/userinfo.profile';
+	const G_SCOPES_CAL = 'https://www.googleapis.com/auth/calendar';
+
+	const TEST_CAL_ID = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
+	const DISCOVERY_DOCS_CAL = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+	const DISCOVERY_DOCS_PEOPLE = ['https://people.googleapis.com/$discovery/rest?version=v1'];
+	
+
+	//---------	MEET UP API-----------------------//
+	const MEET_UP_KEY = '112f1c6d117217b646034221513f16';
+	const MEET_UP_NAME = ['cherryhill-taichi-group', 'Girl-Develop-It-Camden'];
+
+	//----------- GLOBAL VARIABLES ----------------//
+	var signinButton = document.getElementById('signin');
+    var signoutButton = document.getElementById('signout');
+
+
+    
 
 	// go to external calendars and get events to add to test calendar (sjpw's calendar eventually) 
 	var findEvents = function(){
 		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
 
-		var meetUpKey = '112f1c6d117217b646034221513f16';
-		var meetUpName = ['cherryhill-taichi-group', 'Girl-Develop-It-Camden'];
-
-		for (var i = meetUpName.length - 1; i >= 0; i--) {
+		for (var i = MEET_UP_NAME.length - 1; i >= 0; i--) {
 			$.ajax({
 				type: 'GET',
-				url: 'https://api.meetup.com/' + meetUpName[i] + '/events?&sign=true&photo-host=public&page=1&fields=short_link&status=upcoming&_app_key=' + meetUpKey, 
+				url: 'https://api.meetup.com/' + MEET_UP_NAME[i] + '/events?&sign=true&photo-host=public&page=1&fields=short_link&status=upcoming&_app_key=' + MEET_UP_KEY, 
 				dataType: 'jsonp'
 
 			}).done(function(response){
@@ -43,10 +53,9 @@ $(document).ready(function() {
 									'timeZone': 'America/New_York'}
 
 					};
- 					console.log(eventToAdd);
  					return eventToAdd;
-
- 					// addToCalendar(eventToAdd);
+ 					console.log(eventToAdd);
+ 					// insertEvent(eventToAdd);
 
 				}
 
@@ -58,7 +67,7 @@ $(document).ready(function() {
 
 	// source https://gist.github.com/kmaida/6045266
 	function convertTimestamp(timestamp) {
-	  	var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds
+	  	var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds or--.toISOString(); ?
 			yyyy = d.getFullYear(),
 			mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
 			dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
@@ -83,80 +92,46 @@ $(document).ready(function() {
 		return time;
 	}
 
-	// https://developers.google.com/google-apps/calendar/create-events
-	// https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
-	var createEvent = function(){
-		$.ajax({
-			type: 'POST',
-			url: 'https://www.googleapis.com/calendar/v3/calendars/' + testCalendarId + '/events',
-			dataType: 'jsonp'
-
-		}).done(function(response){
-			console.log(response);
-
-		}).fail(function(response){
-				console.log('error: ', response);
-		});
-
-
-
-			// var request = gapi.client.calendar.events.insert({
-			// 	'calendarId': 'primary',
-			// 	'resource': event
-			// });
-
-			// request.execute(function(event) {
-	  // 			appendPre('Event created: ' + event.htmlLink);
-			// });
-	}
-
-	//---------	GOOGLE CALENDAR API----------------//
-
-	const G_CLIENT_ID = '419714143213-dg82c6s6si9dgoe90po1tgdhpnj39hik.apps.googleusercontent.com';
-	const G_API_KEY = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
-	const G_SCOPES_PEOPLE = 'https://www.googleapis.com/auth/userinfo.profile';
-	const G_SCOPES_CAL = "https://www.googleapis.com/auth/calendar.readonly";
-	const TEST_CAL_ID = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
-
-	var signinButton = document.getElementById('signin');
-    var signoutButton = document.getElementById('signout');
-
 
 	//------------- LOAD RESOURCES & 0AUTH --------------//
-
-	function handleClientLoad() {
+	//source https://developers.google.com/google-apps/calendar/quickstart/js#step_2_set_up_the_sample
         // Loads the client library and the auth2 library together for efficiency.
         // Loading the auth2 library is optional here since `gapi.client.init` function will load
         // it if not already loaded. Loading it upfront can save one network request.
-        // gapi.load('client:auth2', initClientPeople);
-        gapi.load('client:auth2', initClientCalendar);
-        console.log('client auth2 library loaded');
+	function handleClientLoad() {  
+       gapi.load('client:auth2', initClientCalendar);
+       gapi.load('client:auth2', initClientPeople);
+  
   	}
 
   	// check that sjpw site admin is logged in to Google: 
-  	// function initClientPeople() {
-   //      // Initialize the client with API key and People API, and initialize OAuth with an
-   //      // OAuth 2.0 client ID and scopes (space delimited string) to request access.
-   //  	// gapi.client.init({
-   //   //        apiKey: G_API_KEY,
-   //   //        discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'],
-   //   //        clientId: G_CLIENT_ID,
-   //   //        scope: G_SCOPES_PEOPLE
-   //   //    }).then(function () {
-   //   //      // Listen for sign-in state changes.
-   //   //      gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-   //   //      // Handle the initial sign-in state.
-   //   //      updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+  	function initClientCalendar() {
+        // Initialize the client with API key and People API, and initialize OAuth with an
+        // OAuth 2.0 client ID and scopes (space delimited string) to request access.
+    	gapi.client.init({
+            apiKey: G_API_KEY,
+            discoveryDocs: DISCOVERY_DOCS_CAL,
+            clientId: G_CLIENT_ID,
+            scope: G_SCOPES_CAL
+        }).then(function () {
+          // Listen for sign-in state changes.
+          gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+          // Handle the initial sign-in state.
+          updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 
-   //   //    });
-   //  }
-    function initClientCalendar() {
+        });
+    }
+
+    function initClientPeople() {
         gapi.client.init({
         	apiKey: G_API_KEY,
+        	discoveryDocs: DISCOVERY_DOCS_PEOPLE,
         	clientId: G_CLIENT_ID,
-        	scope: G_SCOPES_CAL
+        	scope: G_SCOPES_PEOPLE
         }).then(function(){
+        	 // Listen for sign-in state changes.
         	gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        	 // Handle the initial sign-in state.
         	updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
 
         });
@@ -164,11 +139,20 @@ $(document).ready(function() {
 
   	function updateSigninStatus(isSignedIn) {
         // When signin status changes, this function is called.
-        // If the signin status is changed to signedIn, we make an API call.
+        // If the signin status is changed to signedIn, we make an API calls.
         if (isSignedIn) {
+			// getCalendarInfo();
+			listUpcomingEvents();  
+			console.log('you are logged in'); 
+			$('#signin').hide();
+			$('#signout').show();
           	// getUserName();
-			getCalendarInfo();     	 
-        } 
+
+        } else {
+        	console.log('please log in to continue');
+        	$('#signin').show();
+			$('#signout').hide();
+        }
   	}
 
   	function handleSignInClick(event) {
@@ -180,7 +164,31 @@ $(document).ready(function() {
   	function handleSignOutClick(event) {
         gapi.auth2.getAuthInstance().signOut();
   	}
+  	 // Append a pre element to the body containing the given message
+    //    as its text node. Used to display the results of the API call.
+    //  
+    //    @param {string} message Text to be placed in pre element.
+   
+  	function appendPre(message) {
+        var pre = document.getElementById('content');
+        var textContent = document.createTextNode(message + '\n');
+        pre.appendChild(textContent);
+  	}
 
+	
+	// https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
+	var insertEvent = function(eventToAdd){
+		var event = eventToAdd;
+		gapi.client.calendar.events.insert({
+			'calendarId': TEST_CAL_ID,
+			'resource': event
+		}).then(function(event) {
+  			appendPre('Event created: ' + event.htmlLink);
+  			console.log('Event created: ' + event.htmlLink);
+		});
+	}
+
+	
 	//----------------- API CALLS ---------------------//
 	// call people api
   	function getUserName() {
@@ -195,40 +203,79 @@ $(document).ready(function() {
   	}
 
   	//call calendar api
-  	function getCalendarInfo() {
+  	// function getCalendarInfo() {
 		//get the calendar ID where I want to insert events
-  		$.ajax({
-			type: 'GET',
-			url: 'https://www.googleapis.com/calendar/v3/users/me/calendarList',
-			dataType: 'jsonp',
-			// scope: G_SCOPES_CAL
-  		}).done(function(response){
-			console.log(response.result);
 
-		}).fail(function(response){
-				console.log('error: ', response);
-		});
+  	function listUpcomingEvents() {
+        gapi.client.calendar.events.list({
+          'calendarId': TEST_CAL_ID,
+          'timeMin': (new Date()).toISOString(),
+          'showDeleted': false,
+          'singleEvents': true,
+          'maxResults': 10,
+          'orderBy': 'startTime'
+        }).then(function(response) {
+          var events = response.result.items;
+          appendPre('Upcoming events: ');
 
-  		// gapi.client.calendarList.list({
-  		// 	'items': {'id': 'TEST'}
-  		// }).then(function(response) {
-  		// 	console.log(response.result.calendarId);
-  		// }, function(reason) {
-  		// 	console.log('Error: ' + response + reason.result.error.message);
+          if (events.length > 0) {
+            for (i = 0; i < events.length; i++) {
+              var event = events[i];
+              var when = event.start.dateTime;
+              if (!when) {
+                when = event.start.date;
+              }
+              appendPre(event.summary + ' (' + when + ')')
+            }
+          } else {
+            appendPre('No upcoming events found.');
+          }
+        });
+
+		// gapi.client.calendar.calendarList.list({
+
+		// }).then(function(response){
+  //            var calendars = response.items;
+  //            console.log(calendars);
+	 //     });;
+
+     	
+
+
+
         
-  		// });
-  	}
+      }
+	// }
 
+  	//--------	SCROLL TO TOP -----------------------//
+	var listen = function(){
+		// scrollTo functionality
+		$('.nav-main a').on('click', function(event) {
+			event.preventDefault();
+			var pageToScrollTo = $(this).attr('href');
+			console.log(pageToScrollTo);
+			//set the speed of scroll, destination, CALl the function on the window
+			$(window).scrollTo(pageToScrollTo, 300);
+			//highlight current page in nav-main
+			var backToTop = $(this).addClass('is-current');
+		});
+	}
 	//----------------------- DO THIS STUFF -------------------//
 
 	listen();
 	findEvents();
-	handleClientLoad();
+	
 
-	$('#authorize-button').on('click', function(e) {
+	$('#signin').on('click', function(e) {
         e.preventDefault();
         handleSignInClick();
         console.log('clicked the Log In button');
     });
+
+    $('#signout').on('click', function(e){
+    	e.preventDefault();
+    	handleSignOutClick();
+    	console.log('you have signed out');
+    })
 
 });// END of doc.ready()
