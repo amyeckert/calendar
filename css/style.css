@@ -393,40 +393,94 @@ template {
         -ms-flex-flow: column nowrap;
             flex-flow: column nowrap;
     width: 90%;
-    margin: auto;
-    background-color: tomato; }
-    .calendar .calendar-inner .calendar-controls {
-      -webkit-box-ordinal-group: 2;
-          -ms-flex-order: 1;
-              order: 1; }
-    .calendar .calendar-inner .day-of-week {
-      -webkit-box-ordinal-group: 3;
-          -ms-flex-order: 2;
-              order: 2; }
-      .calendar .calendar-inner .day-of-week .dayOFWeek {
-        display: inline-block;
-        height: 50px; }
-    .calendar .calendar-inner .weeks-container {
+    margin: auto; }
+
+.calendar-controls {
+  -webkit-box-ordinal-group: 2;
+      -ms-flex-order: 1;
+          order: 1;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+  height: 50px;
+  width: 100%;
+  border: 1px solid green;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
+  .calendar-controls .calendar-month-year {
+    display: block; }
+
+.days-of-week {
+  -webkit-box-ordinal-group: 3;
+      -ms-flex-order: 2;
+          order: 2;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row nowrap;
+          flex-flow: row nowrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between; }
+  .days-of-week .grid-item-day {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    height: 50px; }
+
+.weeks-container {
+  -webkit-box-ordinal-group: 4;
+      -ms-flex-order: 3;
+          order: 3;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: column nowrap;
+          flex-flow: column nowrap;
+  width: 100%;
+  height: auto; }
+  .weeks-container .grid-row-week {
+    -webkit-box-flex: 0;
+        -ms-flex: 0 1 auto;
+            flex: 0 1 auto;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-flow: row nowrap;
+            flex-flow: row nowrap;
+    width: 100%; }
+    .weeks-container .grid-row-week .grid-item {
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
       -webkit-box-orient: vertical;
       -webkit-box-direction: normal;
-          -ms-flex-flow: column nowrap;
-              flex-flow: column nowrap;
-      -webkit-box-ordinal-group: 4;
-          -ms-flex-order: 3;
-              order: 3; }
-      .calendar .calendar-inner .weeks-container .week {
-        display: inline-block;
-        width: 100%; }
-        .calendar .calendar-inner .weeks-container .week .day {
-          min-height: 200px;
-          min-width: 200px;
-          border: 1px solid tomato; }
-          .calendar .calendar-inner .weeks-container .week .day .date {
-            display: block;
-            height: 30px; }
+          -ms-flex-flow: column;
+              flex-flow: column;
+      -webkit-box-pack: start;
+          -ms-flex-pack: start;
+              justify-content: flex-start;
+      margin: 5px;
+      height: 100px;
+      width: 15%;
+      border: 1px solid tomato; }
+      .weeks-container .grid-row-week .grid-item .day-number {
+        display: block;
+        margin: 0;
+        height: 30px;
+        width: 30px;
+        border: 1px solid pink; }
 
 body {
   width: 90%;

@@ -9,53 +9,92 @@
 		flex-flow: column nowrap;
 		width: 90%;
 		margin: auto;
-		background-color: tomato;
+		// background-color: tomato;
+	}	
+}
+.calendar-controls {
+	order: 1;
+	display: flex;
+	flex-flow: row nowrap;
+	height: 50px;
+	width: 100%;
+	border: 1px solid green;
+	justify-content: space-between;
 
-		.calendar-controls {
-			order: 1;
+	.calendar-previous{
 
-		}	
-		.day-of-week {
-			order: 2;
-			.dayOFWeek {
-			display: inline-block;
-			height: 50px;
-			}
+	}
+	.calendar-month-year {
+		display: block;
+
+		.month{
 
 		}
-		.weeks-container {
+		.year{
+
+		}
+
+	}
+	.calendar-next {
+		
+	}
+}
+.days-of-week {
+	order: 2;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-between;
+
+	.grid-item-day {
+		display: inline-flex;
+		height: 50px;
+	}
+
+}
+.weeks-container {
+	order: 3;
+	display: flex;
+	flex-flow: column nowrap;
+	width: 100%;
+	height: auto;
+
+	.grid-row-week {
+		flex: 0 1 auto;
+		display: flex;
+		flex-flow: row nowrap;
+		width: 100%;
+		// border: 1px solid purple;
+
+
+		.grid-item {
 			display: flex;
-			flex-flow: column nowrap;
-			order: 3;
+			flex-flow: column;
+			justify-content: flex-start;
+			margin: 5px;
+			height: 100px;
+			width: 15%;
+			border: 1px solid tomato;
 
-			.week {
-				display: inline-block;
-
-				width: 100%;
-
-				.day {
-					min-height: 200px;
-					min-width: 200px;
-					border: 1px solid tomato;
-					.date {
-						display: block;
-						height: 30px;
-
-					}
-				}
+			.day-number {
+				display: block;
+				margin:  0 ;
+				height: 30px;
+				width: 30px;
+				border: 1px solid pink;
 
 			}
+			.day-content {
+			}	
 		}
 	}
 }
 
-
 // .grid-row {
-// 	display: flex;
-// 	flex-flow: row nowrap;
+	
 
 // 	.grid-item {
 // 		flex: 0 1 auto;
+
 // 	}
 
 // }

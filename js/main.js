@@ -1,7 +1,7 @@
 
 $(document).ready(function() {
 	handleClientLoad();
-	updateSigninStatus();
+	// updateSigninStatus();
 
 	$('#signin').hide();
 	$('#signout').hide();
@@ -26,6 +26,7 @@ $(document).ready(function() {
 
 	// go to external calendars and get events to add to test calendar (sjpw's calendar eventually) 
 	var findEvents = function(){
+		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
 
 		for (var i = MEET_UP_NAME.length - 1; i >= 0; i--) {
 			$.ajax({
@@ -45,35 +46,52 @@ $(document).ready(function() {
 						'summary':  eventName,
 						'start': {'dateTime': eventStartTime,
 									'timeZone': 'America/New_York'},
-						'link': eventLink
+						'source': {
+							'url': eventLink
+						}
 					};
- 					console.log('find events function working');
-					appendPre('ADD THIS EVENT: ' + eventToAdd.summary + ', ' + eventToAdd.start.dateTime + ', ' + eventToAdd.link +'\n');
+					appendPre('ADD THIS EVENT: ' + eventToAdd.summary + ', ' + eventToAdd.start.dateTime + ', ' + eventToAdd.source.url +'\n');
 
-					insertEvent(eventToAdd);
-					console.log("inserted events found");
+					// insertEvent(eventToAdd);
 				}
 
 			}).fail(function(response){
 				console.log('error: ', response);
 			});
 		}
-		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
+		console.log('found events');
 	}
     // https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
-	var insertEvent = function(eventToAdd){
-	    var event = eventToAdd;
+	// var insertEvent = function(eventToAdd){
 
-	    var request = gapi.client.calendar.events.insert({
-	      	'calendarId': TEST_CAL_ID,
-	      	'resource': event	
-	    });
+	// 	//need if statement to see if event already exists on calendar to prevent adding it repeatedly on page load.
 
-	    request.execute(function(event){
-	    	apprendPre('Event added to TEST Calendar: ' + event.htmlLink);
-	    	// console.log('Event created: ' + event.htmlLink);
-	    });
-	}
+	//     var event = eventToAdd;
+
+	//     $.ajax({
+	//     	type: 'POST',
+	// 		url: 'https://www.googleapis.com/calendar/v3/calendars/' + TEST_CAL_ID + '/events',
+	// 		resource: event
+
+	//     }).done(function(response){
+	//     	console.log(event);
+	    	
+	//     }).fail(function(response){
+	// 			console.log('error: ', response);
+
+	// 	});
+	// }
+
+	    // var request = gapi.client.calendar.events.insert({
+	    //   	'calendarId': TEST_CAL_ID,
+	    //   	'resource': event,
+
+	    // });
+
+	    // request.execute(function(event){
+	    // 	apprendPre('Event added to TEST Calendar: ' + event.htmlLink);
+	    // 	// console.log('Event created: ' + event.htmlLink);
+	    // });
 
 	// source https://gist.github.com/kmaida/6045266
 	function convertTimestamp(timestamp) {
@@ -149,9 +167,7 @@ $(document).ready(function() {
 
   	function updateSigninStatus(isSignedIn) {
         // When signin status changes, this function is called.
-        // If the signin status is changed to signedIn, we make an API calls.
         if (isSignedIn) {
-			// getCalendarInfo();
 			listUpcomingEvents();  
 			console.log('you are logged in'); 
 			$('#signin').hide();
@@ -185,16 +201,16 @@ $(document).ready(function() {
 	
 	//----------------- API CALLS ---------------------//
 	// call people api
-  	function getUserName() {
-        // Make an API call to the People API, and print the user's given name.
-        gapi.client.people.people.get({
-          	resourceName: 'people/me'
-        }).then(function(response) {
-          	console.log('Hello, ' + response.result.names[0].givenName);
-        }, function(reason) {
-          	console.log('Error: ' + reason.result.error.message);
-        });
-  	}
+  	// function getUserName() {
+   //      // Make an API call to the People API, and print the user's given name.
+   //      gapi.client.people.people.get({
+   //        	resourceName: 'people/me'
+   //      }).then(function(response) {
+   //        	console.log('Hello, ' + response.result.names[0].givenName);
+   //      }, function(reason) {
+   //        	console.log('Error: ' + reason.result.error.message);
+   //      });
+  	// }
 
   	//call calendar api
   	function listUpcomingEvents() {
@@ -206,6 +222,9 @@ $(document).ready(function() {
           'maxResults': 10,
           'orderBy': 'startTime'
         }).then(function(response) {
+        	console.log(response.result);
+        	console.log(response.result.etag);
+
           var events = response.result.items;
           appendPre('pre-exisiting events on TEST cal: ');
 
