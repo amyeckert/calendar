@@ -42,14 +42,16 @@ $(document).ready(function() {
 
  					// format the data for GCal events
  					var eventToAdd = {
-						'link': eventLink,
 						'summary':  eventName,
 						'start': {'dateTime': eventStartTime,
-									'timeZone': 'America/New_York'}
+									'timeZone': 'America/New_York'},
+						'link': eventLink
 					};
  					console.log('find events function working');
- 					appendPre('ADD THIS EVENT: ');
-					appendPre(eventToAdd.summary + ', ' + eventToAdd.start.dateTime + ', ' + eventToAdd.link +'\n');	
+					appendPre('ADD THIS EVENT: ' + eventToAdd.summary + ', ' + eventToAdd.start.dateTime + ', ' + eventToAdd.link +'\n');
+
+					insertEvent(eventToAdd);
+					console.log("inserted events found");
 				}
 
 			}).fail(function(response){
@@ -59,23 +61,19 @@ $(document).ready(function() {
 		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
 	}
     // https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
-	// var insertEvent = function(eventToAdd){
-	//     var event = eventToAdd;
-	//     var request = gapi.client.calendar.events.insert({
-	//       	'calendarId': TEST_CAL_ID,
-	//       	'resource': event	
-	//     });
+	var insertEvent = function(eventToAdd){
+	    var event = eventToAdd;
 
-	//     request.execute(function(event){
-	//     	apprendPre('event created: ' + event.htmlLink);
-	//     	console.log('Event created: ' + event.htmlLink);
-	//     })
-	//     // gapi.client.calendar.events.insert({
-	//     // }).then(function(event) {
-	//     //     appendPre('Event created: ' + event.htmlLink);
-	//     //     console.log('Event created: ' + event.htmlLink);
-	//     // });
-	// }
+	    var request = gapi.client.calendar.events.insert({
+	      	'calendarId': TEST_CAL_ID,
+	      	'resource': event	
+	    });
+
+	    request.execute(function(event){
+	    	apprendPre('Event added to TEST Calendar: ' + event.htmlLink);
+	    	// console.log('Event created: ' + event.htmlLink);
+	    });
+	}
 
 	// source https://gist.github.com/kmaida/6045266
 	function convertTimestamp(timestamp) {
