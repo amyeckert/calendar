@@ -11,7 +11,6 @@ $(document).ready(function() {
 	const G_API_KEY = 'AIzaSyA9QOKvd0OrCQwFDtkWD5TCYBj4nxm8ioI';
 	const G_SCOPES_PEOPLE = 'https://www.googleapis.com/auth/userinfo.profile';
 	const G_SCOPES_CAL = 'https://www.googleapis.com/auth/calendar';
-
 	const TEST_CAL_ID = 'amyeckertprojects.com_lrij2jrn2cub096ebeh6e16r94@group.calendar.google.com';
 	const DISCOVERY_DOCS_CAL = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
 	const DISCOVERY_DOCS_PEOPLE = ['https://people.googleapis.com/$discovery/rest?version=v1'];
@@ -23,14 +22,10 @@ $(document).ready(function() {
 
 	//----------- GLOBAL VARIABLES ----------------//
 	var signinButton = document.getElementById('signin');
-    var signoutButton = document.getElementById('signout');
-
-
-    
+  	var signoutButton = document.getElementById('signout');
 
 	// go to external calendars and get events to add to test calendar (sjpw's calendar eventually) 
 	var findEvents = function(){
-		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
 
 		for (var i = MEET_UP_NAME.length - 1; i >= 0; i--) {
 			$.ajax({
@@ -51,32 +46,49 @@ $(document).ready(function() {
 						'summary':  eventName,
 						'start': {'dateTime': eventStartTime,
 									'timeZone': 'America/New_York'}
-
 					};
- 					return eventToAdd;
- 					console.log(eventToAdd);
- 					// insertEvent(eventToAdd);
-
+ 					console.log('find events function working');
+ 					appendPre('ADD THIS EVENT: ');
+					appendPre(eventToAdd.summary + ', ' + eventToAdd.start.dateTime + ', ' + eventToAdd.link +'\n');	
 				}
 
 			}).fail(function(response){
 				console.log('error: ', response);
 			});
 		}
+		console.log('checking for upcoming events for Cherry Hill Tai Chi and GDI-Camden');
 	}
+    // https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
+	// var insertEvent = function(eventToAdd){
+	//     var event = eventToAdd;
+	//     var request = gapi.client.calendar.events.insert({
+	//       	'calendarId': TEST_CAL_ID,
+	//       	'resource': event	
+	//     });
+
+	//     request.execute(function(event){
+	//     	apprendPre('event created: ' + event.htmlLink);
+	//     	console.log('Event created: ' + event.htmlLink);
+	//     })
+	//     // gapi.client.calendar.events.insert({
+	//     // }).then(function(event) {
+	//     //     appendPre('Event created: ' + event.htmlLink);
+	//     //     console.log('Event created: ' + event.htmlLink);
+	//     // });
+	// }
 
 	// source https://gist.github.com/kmaida/6045266
 	function convertTimestamp(timestamp) {
 	  	var d = new Date(timestamp),	// Convert the passed timestamp to milliseconds or--.toISOString(); ?
-			yyyy = d.getFullYear(),
-			mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
-			dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
-			hh = ('0' + d.getHours()).slice(-2),
-			// h = hh,
-			min = ('0' + d.getMinutes()).slice(-2),		// Add leading 0.
-			sec = ('0' + d.getSeconds()).slice(-2),
-			ampm = 'AM',
-			time;
+		yyyy = d.getFullYear(),
+		mm = ('0' + (d.getMonth() + 1)).slice(-2),	// Months are zero based. Add leading 0.
+		dd = ('0' + d.getDate()).slice(-2),			// Add leading 0.
+		hh = ('0' + d.getHours()).slice(-2),
+		// h = hh,
+		min = ('0' + d.getMinutes()).slice(-2),		// Add leading 0.
+		sec = ('0' + d.getSeconds()).slice(-2),
+		ampm = 'AM',
+		time;
 				
 		if (hh > 12) {
 			h = hh - 12;
@@ -101,7 +113,7 @@ $(document).ready(function() {
 	function handleClientLoad() {  
        gapi.load('client:auth2', initClientCalendar);
        gapi.load('client:auth2', initClientPeople);
-  
+       console.log('people and calendar clients loaded');
   	}
 
   	// check that sjpw site admin is logged in to Google: 
@@ -146,7 +158,6 @@ $(document).ready(function() {
 			console.log('you are logged in'); 
 			$('#signin').hide();
 			$('#signout').show();
-          	// getUserName();
 
         } else {
         	console.log('please log in to continue');
@@ -165,29 +176,14 @@ $(document).ready(function() {
         gapi.auth2.getAuthInstance().signOut();
   	}
   	 // Append a pre element to the body containing the given message
-    //    as its text node. Used to display the results of the API call.
-    //  
-    //    @param {string} message Text to be placed in pre element.
+    //  as its text node. Used to display the results of the API call. 
+    //  @param {string} message Text to be placed in pre element.
    
   	function appendPre(message) {
         var pre = document.getElementById('content');
         var textContent = document.createTextNode(message + '\n');
         pre.appendChild(textContent);
   	}
-
-	
-	// https://developers.google.com/google-apps/calendar/v3/reference/events/insert#examples
-	var insertEvent = function(eventToAdd){
-		var event = eventToAdd;
-		gapi.client.calendar.events.insert({
-			'calendarId': TEST_CAL_ID,
-			'resource': event
-		}).then(function(event) {
-  			appendPre('Event created: ' + event.htmlLink);
-  			console.log('Event created: ' + event.htmlLink);
-		});
-	}
-
 	
 	//----------------- API CALLS ---------------------//
 	// call people api
@@ -203,9 +199,6 @@ $(document).ready(function() {
   	}
 
   	//call calendar api
-  	// function getCalendarInfo() {
-		//get the calendar ID where I want to insert events
-
   	function listUpcomingEvents() {
         gapi.client.calendar.events.list({
           'calendarId': TEST_CAL_ID,
@@ -216,7 +209,7 @@ $(document).ready(function() {
           'orderBy': 'startTime'
         }).then(function(response) {
           var events = response.result.items;
-          appendPre('Upcoming events: ');
+          appendPre('pre-exisiting events on TEST cal: ');
 
           if (events.length > 0) {
             for (i = 0; i < events.length; i++) {
@@ -231,21 +224,8 @@ $(document).ready(function() {
             appendPre('No upcoming events found.');
           }
         });
+  	}
 
-		// gapi.client.calendar.calendarList.list({
-
-		// }).then(function(response){
-  //            var calendars = response.items;
-  //            console.log(calendars);
-	 //     });;
-
-     	
-
-
-
-        
-      }
-	// }
 
   	//--------	SCROLL TO TOP -----------------------//
 	var listen = function(){
@@ -264,8 +244,9 @@ $(document).ready(function() {
 
 	listen();
 	findEvents();
+	// getUserName();
 	
-
+	
 	$('#signin').on('click', function(e) {
         e.preventDefault();
         handleSignInClick();
